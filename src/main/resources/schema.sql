@@ -47,6 +47,9 @@ CREATE TABLE Friend (
                         CHECK (user_id < friend_id)  -- Assuming bidirectional friendship
 );
 
+Drop Table Friend;
+Drop Table Comment;
+
 
 
 
