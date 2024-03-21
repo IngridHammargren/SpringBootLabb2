@@ -1,4 +1,4 @@
-package se.iths.springbootlabb2.entity;
+package se.iths.springbootlabb2.user;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
