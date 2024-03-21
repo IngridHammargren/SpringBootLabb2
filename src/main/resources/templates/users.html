@@ -1,10 +1,20 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Users</title>
+
 </head>
 <body>
-<h1>Users</h1>
+<div>
+    <a href="http://localhost:8080/web/users?lang=en">English</a>
+    <a href="http://localhost:8080/web/users?lang=sv">Svenska</a>
+</div>
+<h1 th:text="#{users}"></h1>
+<p th:each="user : ${userNames}" th:text="${user}">No name</p>
+<div th:if="${userNames.isEmpty()}">
+    <p>We have no users</p>
+</div>
+<a href="/web/create" th:text="#{moreusers}"></a>
 </body>
 </html>
