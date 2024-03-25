@@ -1,69 +1,41 @@
 package se.iths.springbootlabb2.entities;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
+
+@Getter
+@Setter
 @Entity
+@Table(name = "message_entity")
 public class MessageEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @Lob
+    @Column(name = "content", nullable = false)
+    private String content;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity userEntity;
 
-    @Column(nullable = false)
-    private String content;
+    @Column(name = "is_public", nullable = false)
+    private Boolean isPublic;
 
+    @Column(name = "created_date",nullable = false)
     @CreatedDate
-    @Column(nullable = false, updatable = false)
-    private LocalDateTime creationDate;
+    private Instant createdDate;
 
+    @Column(name = "last_modified_date",nullable = false)
     @LastModifiedDate
-    private LocalDateTime lastEditDate;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public UserEntity getUser() {
-        return userEntity;
-    }
-
-    public void setUser(UserEntity userEntity) {
-        this.userEntity = userEntity;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public LocalDateTime getCreationDate() {
-        return creationDate;
-    }
-
-    public void setCreationDate(LocalDateTime creationDate) {
-        this.creationDate = creationDate;
-    }
-
-    public LocalDateTime getLastEditDate() {
-        return lastEditDate;
-    }
-
-    public void setLastEditDate(LocalDateTime lastEditDate) {
-        this.lastEditDate = lastEditDate;
-    }
+    private Instant lastModifiedDate;
 }
 
