@@ -23,8 +23,9 @@ public interface UserRepository  extends ListCrudRepository<UserEntity, Long> {
 
     @Modifying
     @Transactional
-    @Query(value = "INSERT INTO user_entity (user_name, profile_picture, first_name, last_name, email) VALUES (:userName, :profilePicture, :firtName, :lastName, :email)", nativeQuery = true)
-    void newUser(@Param("userName") String userName, @Param("profilePicture") String profilePicture, @Param("fullName") String fullName, @Param("email") String email);
+    @Query(value = "INSERT INTO user_entity (user_name, profile_picture, first_name, last_name, email) VALUES (:userName, :profilePicture, :firstName, :lastName, :email)", nativeQuery = true)
+    void newUser(@Param("userName") String userName, @Param("profilePicture") String profilePicture, @Param("firstName") String firstName, @Param("lastName") String lastName, @Param("email") String email);
+
     @Modifying
     @Transactional
     @Query("UPDATE UserEntity u SET u.profilePicture = :profilePicture WHERE u.id = :id")
