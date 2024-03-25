@@ -11,7 +11,7 @@
     <a href="http://localhost:8080/web/users?lang=sv">Svenska</a>
 </div>
 <h1 th:text="#{users}"></h1>
-<p th:each="user : ${userNames}" th:text="${user}">No name</p>
+<p th:each="userEntity : ${userNames}" th:text="${userEntity}">No name</p>
 <div th:if="${userNames.isEmpty()}">
     <p>We have no users</p>
 </div>
