@@ -3,7 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <title>Users</title>
-
+    <style>
+        /* Style for positioning the logout button */
+        #logoutForm {
+            position: absolute;
+            top: 10px; /* Adjust top position as needed */
+            right: 10px; /* Adjust right position as needed */
+        }
+    </style>
 </head>
 <body>
 <div>
@@ -16,5 +23,10 @@
     <p>We have no users</p>
 </div>
 <a href="/web/create" th:text="#{moreusers}"></a>
+
+<!-- Add the logout form -->
+<form id="logoutForm" action="/logout" method="post">
+    <input type="submit" value="Logout">
+</form>
 </body>
 </html>
