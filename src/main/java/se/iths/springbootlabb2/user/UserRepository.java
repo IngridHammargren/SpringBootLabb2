@@ -1,3 +1,4 @@
+/*
 package se.iths.springbootlabb2.user;
 
 import org.springframework.data.repository.ListCrudRepository;
@@ -8,3 +9,6 @@ public interface UserRepository extends ListCrudRepository<User, Long>{
     List<User> findByName(String name);
 
 }
+
+
+ */
