@@ -1,12 +1,12 @@
-package se.iths.springbootlabb2.user;
+package se.iths.springbootlabb2.entities;
 
 import jakarta.persistence.*;
-import se.iths.springbootlabb2.message.Message;
+
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-public class User {
+public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -23,8 +23,8 @@ public class User {
     private String displayName;
     private String profilePicture;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Message> messages = new ArrayList<>();
+    @OneToMany(mappedBy = "userEntity", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MessageEntity> messageEntityEntities = new ArrayList<>();
 
     public Long getId() {
         return id;
