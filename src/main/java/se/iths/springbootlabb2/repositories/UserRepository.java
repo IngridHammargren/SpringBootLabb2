@@ -12,18 +12,18 @@ import se.iths.springbootlabb2.entities.UserEntity;
 import java.util.List;
 
 public interface UserRepository  extends ListCrudRepository<UserEntity, Long> {
-    List<UserEntity> findByUserName(String username);
+    List<UserEntity> findByUserName(String userName);
 
     List<UserEntity> findByEmail(String email);
 
-    List<UserEntity> findByFullName(String fullName);
+    List<UserEntity> findByFirstName (String firstName);
 
-    List<UserEntity> findByFullNameContaining(String partialName);
+    List<UserEntity> findByLastName(String lastName);
 
 
     @Modifying
     @Transactional
-    @Query(value = "INSERT INTO UserEntity (user_name, profile_picture, full_name, email) VALUES (:userName, :profilePicture, :fullName, :email)", nativeQuery = true)
+    @Query(value = "INSERT INTO user_entity (user_name, profile_picture, first_name, last_name, email) VALUES (:userName, :profilePicture, :firtName, :lastName, :email)", nativeQuery = true)
     void newUser(@Param("userName") String userName, @Param("profilePicture") String profilePicture, @Param("fullName") String fullName, @Param("email") String email);
     @Modifying
     @Transactional
