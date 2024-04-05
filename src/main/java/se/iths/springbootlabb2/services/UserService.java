@@ -18,39 +18,44 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    @Cacheable(value = "users")
+    @Cacheable(value = "userName")
     public List<UserEntity> findByUserName(String userName) {
         return userRepository.findByUserName(userName);
     }
 
-    @Cacheable(value = "users")
-    public List<UserEntity> findByEmail(String email) {
-        return userRepository.findByEmail(email);
-    }
-
-    @Cacheable(value = "users")
+    @Cacheable(value = "firstName")
     public List<UserEntity> findByFirstName(String firstName) {
         return userRepository.findByFirstName(firstName);
     }
 
-    @Cacheable(value = "users")
+    @Cacheable(value = "lastName")
     public List<UserEntity> findByLastName(String lastName) {
         return userRepository.findByLastName(lastName);
     }
 
-    @CacheEvict(value = "users", key = "'id:' + #id")
-    public void updateProfilePictureByUserName(Long id, String profilePicture) {
-        userRepository.updateProfilePictureByUserName(id, profilePicture);
+    @Cacheable(value = "email")
+    public List<UserEntity> findByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 
-    @CacheEvict(value = "users", key = "'id:' + #id")
+    @CacheEvict(value= "email", allEntries = true)
+    public void updateEmailById(Long id, String email) {
+        userRepository.updateEmailById(id, email);
+    }
+
+    @CacheEvict(value = "email", allEntries = true)
+    public void saveEmail(UserEntity user) {
+        userRepository.save(user);
+    }
+
+    @CacheEvict(value= "userName", allEntries = true)
     public void updateUserNameByUserName(Long id, String userName) {
         userRepository.updateUserNameByUserName(id, userName);
     }
 
-    @CacheEvict(value = "users", key = "'id:' + #id")
-    public void updateEmailById(Long id, String email) {
-        userRepository.updateEmailById(id, email);
+    @CacheEvict(value = "userName", allEntries = true)
+    public void saveUserName(UserEntity user) {
+        userRepository.save(user);
     }
 
 }
