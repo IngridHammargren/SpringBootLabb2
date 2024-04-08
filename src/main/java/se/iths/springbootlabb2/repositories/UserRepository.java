@@ -21,6 +21,8 @@ public interface UserRepository  extends ListCrudRepository<UserEntity, Long> {
     List<UserEntity> findByLastName(String lastName);
 
 
+
+
     @Modifying
     @Transactional
     @Query(value = "INSERT INTO user_entity (user_name, profile_picture, first_name, last_name, email) VALUES (:userName, :profilePicture, :firstName, :lastName, :email)", nativeQuery = true)

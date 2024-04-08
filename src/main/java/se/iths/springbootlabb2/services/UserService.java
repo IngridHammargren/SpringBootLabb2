@@ -18,6 +18,14 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
+    public List<UserEntity> getAllUsers() {
+        return userRepository.findAll();
+    }
+
+    public void createUser (String userName, String profilePicture, String firstName, String lastName, String email) {
+        userRepository.newUser(userName, profilePicture, firstName, lastName, email);
+    }
+
     @Cacheable(value = "userName")
     public List<UserEntity> findByUserName(String userName) {
         return userRepository.findByUserName(userName);
@@ -38,6 +46,8 @@ public class UserService {
         return userRepository.findByEmail(email);
     }
 
+
+
     @CacheEvict(value= "email", allEntries = true)
     public void updateEmailById(Long id, String email) {
         userRepository.updateEmailById(id, email);
@@ -56,6 +66,18 @@ public class UserService {
     @CacheEvict(value = "userName", allEntries = true)
     public void saveUserName(UserEntity user) {
         userRepository.save(user);
+    }
+
+    public void updateUser(Long id, UserEntity user){
+        UserEntity existingUser = userRepository.findById(id).orElseThrow(()->new RuntimeException("Användaren hittades ej"));
+
+        existingUser.setUserName(user.getUserName());
+        existingUser.setProfilePicture(user.getProfilePicture());
+        existingUser.setFirstName(user.getFirstName());
+        existingUser.setLastName(user.getLastName());
+        existingUser.setEmail(user.getEmail());
+
+        userRepository.save(existingUser);
     }
 
 }
