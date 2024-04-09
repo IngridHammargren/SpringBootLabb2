@@ -14,6 +14,9 @@ public class UserEntity {
     @Column(name = "id", nullable = false)
     private Long id;
 
+    @Column(name ="github_id",nullable = false)
+    private Long githubId;
+
     @Column(name = "user_name", nullable = false, unique = true)
     private String userName;
 
@@ -28,4 +31,6 @@ public class UserEntity {
 
     @Column(name = "email", nullable = false, unique = true)
     private String email;
+
+
 }
