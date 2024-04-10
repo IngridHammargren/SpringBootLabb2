@@ -8,6 +8,7 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.client.RestClient;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -35,5 +36,11 @@ public class SecurityConfig {
                 "ROLE_USER > ROLE_GUEST");
         return hierarchy;
     }
+
+    @Bean
+    RestClient restClient() {
+        return RestClient.create();
+    }
+
 
 }
