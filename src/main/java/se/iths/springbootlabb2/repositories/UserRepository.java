@@ -10,8 +10,9 @@ import se.iths.springbootlabb2.entities.UserEntity;
 
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UserRepository  extends ListCrudRepository<UserEntity, Long> {
-
+    Optional<UserEntity> findByUserName(String userName);
 }
 

@@ -1,5 +1,6 @@
 package se.iths.springbootlabb2.services;
 
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import se.iths.springbootlabb2.entities.MessageEntity;
@@ -9,10 +10,10 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class MessageService {
     MessageRepository messageRepository;
 
-    @Autowired
     public MessageService(MessageRepository messageRepository) {
         this.messageRepository = messageRepository;
     }
@@ -23,8 +24,8 @@ public class MessageService {
     public Iterable<MessageEntity> getAllMessages() {
         return messageRepository.findAll();
     }
-    public MessageEntity saveMessage(MessageEntity messageEntity) {
-        return messageRepository.save(messageEntity);
+    public void saveMessage(MessageEntity messageEntity) {
+        messageRepository.save(messageEntity);
     }
     public void deleteMessageById(Long id) {
         messageRepository.deleteById(id);

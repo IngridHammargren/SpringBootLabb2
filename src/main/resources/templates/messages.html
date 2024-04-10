@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Messages</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        div {
+            background-color: #fff;
+            padding: 20px;
+            margin: 10px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        a {
+            display: block;
+            text-align: center;
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 4px;
+            text-decoration: none;
+            margin: 20px auto;
+            width: fit-content;
+            transition: background-color 0.3s ease;
+        }
+
+        a:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+<h1>Messages</h1>
+<div th:each="message : ${messages}">
+    <p th:text="${message.content}"></p>
+    <p th:text="${'Created by: ' + message.userEntity.userName}"></p>
+    <p th:text="${'Created : ' + message.getCreatedDate()}"></p>
+    <p th:text="${'Last modified : ' + message.getLastModifiedDate()}"></p>
+</div>
+<a href="/web/create">New message</a>
+</body>
+</html>

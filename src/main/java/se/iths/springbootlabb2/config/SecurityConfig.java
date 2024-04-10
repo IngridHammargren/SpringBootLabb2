@@ -2,6 +2,7 @@ package se.iths.springbootlabb2.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.config.Customizer;
@@ -22,7 +23,8 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/", "/login", "/oauth/**", "/logout", "/error**").permitAll()
-                        .requestMatchers("/web/create").hasRole("ADMIN")
+                        .requestMatchers("/web/create").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/web/delete/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .oauth2Login(Customizer.withDefaults());
