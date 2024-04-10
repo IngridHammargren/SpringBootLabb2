@@ -15,6 +15,12 @@ public class GithubOAuth2UserService extends DefaultOAuth2UserService {
 
     Logger logger = LoggerFactory.getLogger(GithubOAuth2UserService.class);
 
+    GithubService gitHubService;
+
+    public GithubOAuth2UserService(GithubService gitHubService) {
+        this.gitHubService = gitHubService;
+    }
+
     //https://dev.to/relive27/spring-security-oauth2-login-51lj
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
