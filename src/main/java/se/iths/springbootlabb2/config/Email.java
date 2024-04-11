@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.List;
 
-public record Email (String email, boolean primary, boolean verified, String visibility) {
+public record Email(String email, boolean primary, boolean verified, String visibility) {
 
     public static List<Email> fromJson(String json) {
         try {

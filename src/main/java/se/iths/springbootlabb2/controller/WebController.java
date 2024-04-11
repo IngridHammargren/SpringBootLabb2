@@ -65,6 +65,7 @@ public class WebController {
         }
 
 
+
         OAuth2User userDetails = (OAuth2User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Optional<UserEntity> existingUser = userRepository.findByUserName(userDetails.getAttributes().get("login").toString());
         UserEntity user;
@@ -78,6 +79,8 @@ public class WebController {
             user.setLastName(userDetails.getAttributes().get("family_name").toString());
             user.setEmail(userDetails.getAttributes().get("email") != null ? userDetails.getAttributes().get("email").toString() : "max.erkmar@iths.se");
         }
+
+
 
         msg.setUserEntity(user);
 
