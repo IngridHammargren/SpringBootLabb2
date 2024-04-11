@@ -22,7 +22,7 @@ public class SecurityConfig {
     SecurityFilterChain web(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/", "/login", "/oauth/**", "/logout", "/error**").permitAll()
+                        .requestMatchers( "/login", "/oauth/**", "/logout", "/error**").permitAll()
                         .requestMatchers("/web/create").permitAll()
                         .requestMatchers(HttpMethod.DELETE, "/web/delete/**").permitAll()
                         .anyRequest().authenticated()
