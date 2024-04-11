@@ -82,6 +82,32 @@ public class WebController {
         return "redirect:/web/messages";
     }
 
+ 65-add-functionality-in-webcontroller-to-delete-messages
+    @PostMapping("messages/{id}/delete")
+    public String deleteMessage(@PathVariable Long id) {
+        try {
+            // Retrieve the message by ID
+            Optional<MessageEntity> optionalMessage = messageService.getMessageById(id);
+
+            // Check if the message exists
+            if (optionalMessage.isPresent()) {
+                // Delete the message
+                messageService.deleteMessageById(id);
+            } else {
+                // If the message doesn't exist, handle the error accordingly
+                throw new EntityNotFoundException("Message not found with ID: " + id);
+            }
+        } catch (EntityNotFoundException e) {
+            // Handle the exception, for example, by logging the error or displaying a message to the user
+            e.printStackTrace(); // Log the error
+        }
+
+        // Redirect back to the messages page
+        return "redirect:/web/messages";
+    }
+
+
+
     @GetMapping("/edit/{id}")
     public String showEditForm(@PathVariable("id") Long id, Model model) {
         Optional<MessageEntity> messageOptional = messageService.getMessageById(id);
@@ -107,4 +133,5 @@ public class WebController {
         }
         return "redirect:/web/messages";
     }
+ main
 }
