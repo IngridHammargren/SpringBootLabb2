@@ -19,6 +19,8 @@ import se.iths.springbootlabb2.repositories.UserRepository;
 import se.iths.springbootlabb2.services.MessageService;
 
 import java.time.Instant;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -46,6 +48,7 @@ public class WebController {
     @GetMapping("messages")
     public String getAllMessages(Model model) {
         Iterable<MessageEntity> messages = messageService.getAllMessages();
+        Collections.reverse((List<MessageEntity>) messages);
         model.addAttribute("messages", messages);
         return "messages";
     }
@@ -60,10 +63,7 @@ public class WebController {
                                 BindingResult bindingResult,
                                 Model model) {
 
-        if (bindingResult.hasErrors()) {
-            System.out.println("Has error");
-            return "create";
-        }
+        if (bindingResult.hasErrors()) return "create";
 
         OAuth2User userDetails = (OAuth2User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Optional<UserEntity> existingUser = userRepository.findByUserName(userDetails.getAttributes().get("login").toString());
