@@ -77,6 +77,26 @@
             top: 10px;
             right: 10px;
         }
+
+        .language-buttons {
+            position: absolute;
+            top: 10px;
+            right: 150px; /* Adjust horizontal position as needed */
+            display: inline-block; /* Display language buttons inline-block */
+        }
+
+        .language-buttons form {
+            display: inline-block;
+        }
+
+        .language-buttons button {
+            background-color: #007bff; /* Blue color for language buttons */
+            margin-right: 5px; /* Add margin between language buttons */
+        }
+
+        .language-buttons button:hover {
+            background-color: #0056b3; /* Darker blue color on hover */
+        }
     </style>
 </head>
 <body>
@@ -94,6 +114,17 @@
 <form action="/web/logout" method="get" class="logout-btn">
     <button type="submit">Logout</button>
 </form>
+<div class="language-buttons">
+    <form action="http://localhost:8080/web/messages?lang=en" method="get">
+        <button type="submit">English</button>
+    </form>
+    <form action="http://localhost:8080/web/messages?lang=sv" method="get">
+        <button type="submit">Svenska</button>
+    </form>
+</div>
 <a href="/web/create">New message</a>
 </body>
 </html>
+
+
+
