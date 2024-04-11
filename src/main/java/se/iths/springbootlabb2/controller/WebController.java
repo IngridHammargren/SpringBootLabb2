@@ -3,6 +3,7 @@ package se.iths.springbootlabb2.controller;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -16,6 +17,7 @@ import se.iths.springbootlabb2.services.MessageService;
 import se.iths.springbootlabb2.services.UserService;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -61,6 +63,7 @@ public class WebController {
             System.out.println("Has error");
             return "create";
         }
+
 
         OAuth2User userDetails = (OAuth2User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Optional<UserEntity> existingUser = userRepository.findByUserName(userDetails.getAttributes().get("login").toString());

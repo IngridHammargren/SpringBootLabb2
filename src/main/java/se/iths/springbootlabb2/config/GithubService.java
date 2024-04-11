@@ -1,6 +1,5 @@
 package se.iths.springbootlabb2.config;
 
-import jakarta.validation.constraints.Email;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
