@@ -74,9 +74,10 @@
         }
         .logout-btn {
             position: absolute;
-            top: 10px;
+            top: 20px;
             right: 10px;
         }
+
 
         .language-buttons {
             position: absolute;
@@ -96,16 +97,23 @@
 
         .language-buttons button:hover {
             background-color: #0056b3; /* Darker blue color on hover */
+
+        .new-message-btn {
+            position: absolute;
+            top: 1px;
+            left: 20px;
+
         }
     </style>
 </head>
 <body>
 <h1>Messages</h1>
+
 <div th:each="message : ${messages}">
     <p th:text="${message.content}"></p>
     <p th:text="'Created by: ' + ${message.userEntity.userName}" class="timestamp"></p>
-    <p th:text="'Created: ' + ${#dates.format(message.createdDate, 'yyyy-MM-dd HH:mm:ss')}" class="timestamp"></p>
-    <p th:if="${message.lastModifiedDate != null}" th:text="'Last edited: ' + ${#dates.format(message.lastModifiedDate, 'yyyy-MM-dd HH:mm:ss')}" class="timestamp"></p>
+    <p th:text="'Created: ' + ${#dates.format(message.createdDate, 'yyyy-MM-dd HH:mm')}" class="timestamp"></p>
+    <p th:if="${message.lastModifiedDate != null}" th:text="'Last edited: ' + ${#dates.format(message.lastModifiedDate, 'yyyy-MM-dd HH:mm')}" class="timestamp"></p>
     <form th:action="@{/web/edit/{id}(id=${message.id})}" method="get"><button class="edit" type="submit">Edit</button> </form>
     <form th:action="@{/web/messages/{id}/delete(id=${message.id})}" method="post">
         <button type="submit">Delete</button>
@@ -114,6 +122,7 @@
 <form action="/web/logout" method="get" class="logout-btn">
     <button type="submit">Logout</button>
 </form>
+
 <div class="language-buttons">
     <form action="http://localhost:8080/web/messages?lang=en" method="get">
         <button type="submit">English</button>
@@ -123,6 +132,9 @@
     </form>
 </div>
 <a href="/web/create">New message</a>
+
+    <a href="/web/create" class="new-message-btn">New message</a>
+
 </body>
 </html>
 
