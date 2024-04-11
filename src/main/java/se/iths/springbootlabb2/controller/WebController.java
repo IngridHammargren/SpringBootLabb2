@@ -13,7 +13,7 @@ import se.iths.springbootlabb2.entities.MessageEntity;
 import se.iths.springbootlabb2.entities.UserEntity;
 import se.iths.springbootlabb2.repositories.UserRepository;
 import se.iths.springbootlabb2.services.MessageService;
-import se.iths.springbootlabb2.services.UserService;
+
 
 import java.time.Instant;
 import java.util.Optional;
