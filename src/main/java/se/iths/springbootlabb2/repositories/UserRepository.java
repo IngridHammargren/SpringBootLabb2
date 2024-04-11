@@ -14,5 +14,7 @@ import java.util.Optional;
 
 public interface UserRepository  extends ListCrudRepository<UserEntity, Long> {
     Optional<UserEntity> findByUserName(String userName);
+
+    UserEntity findByGithubId(Long githubId);
 }
 
