@@ -78,6 +78,7 @@
 <h1>Messages</h1>
 <div th:each="message : ${messages}">
     <p th:text="${message.content}"></p>
+ 65-add-functionality-in-webcontroller-to-delete-messages
     <p th:text="'Created by: ' + ${message.userEntity.userName}" class="timestamp"></p>
     <p th:text="'Created: ' + ${#dates.format(message.createdDate, 'yyyy-MM-dd HH:mm:ss')}" class="timestamp"></p>
     <p th:if="${message.lastModifiedDate != null}" th:text="'Last edited: ' + ${#dates.format(message.lastModifiedDate, 'yyyy-MM-dd HH:mm:ss')}" class="timestamp"></p>
@@ -89,6 +90,12 @@
     <form th:action="@{/web/messages/{id}/delete(id=${message.id})}" method="post">
         <button type="submit">Delete</button>
     </form>
+
+    <p th:text="${'Created by: ' + message.userEntity.userName}"></p>
+    <p th:text="${'Created : ' + #dates.format(message.createdDate, 'yyyy-MM-dd HH:mm')}"></p>
+    <p th:text="${'Last modified : ' + #dates.format(message.lastModifiedDate, 'yyyy-MM-dd HH:mm')}"></p>
+    <a th:href="@{/web/edit/{id}(id=${message.id})}">Edit</a>
+ main
 </div>
 <a href="/web/create">New message</a>
 </body>

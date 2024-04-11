@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Create New Message</title>
+    <title>Edit Message</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -60,16 +60,11 @@
     </style>
 </head>
 <body>
-<h1>New Message</h1>
-<form action="#" th:action="@{/web/create}" th:object="${messageContent}" method="post">
-    <label for="content"></label><br>
+<h1>Edit Message</h1>
+<form action="#" th:action="@{/web/edit/{id}(id=${messageId})}" th:object="${editedMessage}" method="post">
     <textarea id="content" name="content" th:field="*{content}" required></textarea><br>
-
-    <label for="isPublic">Public message:</label>
-    <input type="checkbox" id="isPublic" name="isPublic" th:field="*{isPublic}" /><br>
-    <p><input type="submit" value="Submit"></p>
+    <input type="submit" value="Update">
 </form>
 </body>
 </html>
-
 
