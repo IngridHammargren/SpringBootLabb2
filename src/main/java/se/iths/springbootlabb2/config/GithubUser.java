@@ -8,11 +8,10 @@ import lombok.Setter;
 public class GithubUser {
 
     private String login;
-    private Long id;
+    private Long userId;
     private String name;
     private String url;
     private String avatarUrl;
     private String email;
 
 }
-
