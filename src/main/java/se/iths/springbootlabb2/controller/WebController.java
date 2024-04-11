@@ -82,7 +82,7 @@ public class WebController {
         return "redirect:/web/messages";
     }
 
- 65-add-functionality-in-webcontroller-to-delete-messages
+
     @PostMapping("messages/{id}/delete")
     public String deleteMessage(@PathVariable Long id) {
         try {
@@ -133,5 +133,5 @@ public class WebController {
         }
         return "redirect:/web/messages";
     }
- main
+
 }
