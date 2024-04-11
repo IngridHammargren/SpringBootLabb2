@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Messages</title>
     <style>
@@ -72,6 +72,11 @@
             font-size: 12px;
             color: #666;
         }
+        .logout-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
     </style>
 </head>
 <body>
@@ -81,15 +86,14 @@
     <p th:text="'Created by: ' + ${message.userEntity.userName}" class="timestamp"></p>
     <p th:text="'Created: ' + ${#dates.format(message.createdDate, 'yyyy-MM-dd HH:mm:ss')}" class="timestamp"></p>
     <p th:if="${message.lastModifiedDate != null}" th:text="'Last edited: ' + ${#dates.format(message.lastModifiedDate, 'yyyy-MM-dd HH:mm:ss')}" class="timestamp"></p>
-    <!-- Edit button -->
-    <form th:action="@{/web/messages/{id}/edit(id=${message.id})}" method="get">
-        <button class="edit" type="submit">Edit</button>
-    </form>
-    <!-- Delete button -->
+    <form th:action="@{/web/edit/{id}(id=${message.id})}" method="get"><button class="edit" type="submit">Edit</button> </form>
     <form th:action="@{/web/messages/{id}/delete(id=${message.id})}" method="post">
         <button type="submit">Delete</button>
     </form>
 </div>
+<form action="/web/logout" method="get" class="logout-btn">
+    <button type="submit">Logout</button>
+</form>
 <a href="/web/create">New message</a>
 </body>
 </html>
