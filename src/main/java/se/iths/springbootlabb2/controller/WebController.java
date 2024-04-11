@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import se.iths.springbootlabb2.CreateMessageFormData;
 import se.iths.springbootlabb2.entities.MessageEntity;
 import se.iths.springbootlabb2.entities.UserEntity;
@@ -61,29 +62,49 @@ public class WebController {
             return "create";
         }
 
-
-        org.springframework.security.oauth2.core.user.OAuth2User userDetails =
-                (org.springframework.security.oauth2.core.user.OAuth2User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-
+        OAuth2User userDetails = (OAuth2User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Optional<UserEntity> existingUser = userRepository.findByUserName(userDetails.getAttributes().get("login").toString());
-        UserEntity userEntity;
+        UserEntity user;
         if (existingUser.isPresent()) {
-            userEntity = existingUser.get();
+            user = existingUser.get();
         } else {
-            userEntity = new UserEntity();
-            userEntity.setGithubId(userDetails.getAttributes().get("id") != null ? Long.parseLong(userDetails.getAttributes().get("id").toString()) : 123L);
-            userEntity.setUserName(userDetails.getAttributes().get("login") != null ? userDetails.getAttributes().get("login").toString() : "maxerkmar");
-            userEntity.setFirstName(userDetails.getAttributes().get("name") != null ? userDetails.getAttributes().get("name").toString() : "max");
-            userEntity.setLastName(userDetails.getAttributes().get("family_name") != null ? userDetails.getAttributes().get("family_name").toString() : "erkmar");
-            userEntity.setEmail(userDetails.getAttributes().get("email") != null ? userDetails.getAttributes().get("email").toString() : "max.erkmar@iths.se");
+            user = new UserEntity();
+            user.setGithubId(Long.parseLong(userDetails.getAttributes().get("id").toString()));
+            user.setUserName(userDetails.getAttributes().get("login").toString());
+            user.setFirstName(userDetails.getAttributes().get("name").toString());
+            user.setLastName(userDetails.getAttributes().get("family_name").toString());
+            user.setEmail(userDetails.getAttributes().get("email") != null ? userDetails.getAttributes().get("email").toString() : "max.erkmar@iths.se");
         }
 
-        msg.setUserEntity(userEntity);
+        msg.setUserEntity(user);
 
         messageService.saveMessage(msg.toEntity());
         return "redirect:/web/messages";
     }
 
-
+    @GetMapping("/edit/{id}")
+    public String showEditForm(@PathVariable("id") Long id, Model model) {
+        Optional<MessageEntity> messageOptional = messageService.getMessageById(id);
+        if (messageOptional.isPresent()) {
+            MessageEntity message = messageOptional.get();
+            CreateMessageFormData editedMessage = new CreateMessageFormData();
+            editedMessage.setContent(message.getContent());
+            model.addAttribute("messageId", id);
+            model.addAttribute("editedMessage", editedMessage);
+            return "edit";
+        } else {
+            return "redirect:/web/messages";
+        }
+    }
+    @PostMapping("/edit/{id}")
+    public String editMessage(@PathVariable("id") Long id, @ModelAttribute("editedMessage") CreateMessageFormData editedMessage, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {return "edit";}
+        Optional<MessageEntity> messageOptional = messageService.getMessageById(id);
+        if (messageOptional.isPresent()) {
+            MessageEntity message = messageOptional.get();
+            message.setContent(editedMessage.getContent());
+            messageService.saveMessage(message);
+        }
+        return "redirect:/web/messages";
+    }
 }
