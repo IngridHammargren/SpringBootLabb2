@@ -21,7 +21,7 @@
             margin: 10px 0;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            position: relative; /* Add relative positioning */
+            position: relative;
         }
 
         a {
@@ -42,35 +42,35 @@
         }
 
         form {
-            display: inline-block; /* Display forms inline-block */
-            margin-right: 5px; /* Add margin to separate buttons */
+            display: inline-block;
+            margin-right: 5px;
         }
 
         button {
-            background-color: #dc3545; /* Red color for delete button */
+            background-color: #dc3545;
             color: #fff;
             border: none;
             padding: 8px 16px;
             border-radius: 4px;
             cursor: pointer;
-            width: fit-content; /* Make button width dynamic */
+            width: fit-content;
         }
 
         button.edit {
-            background-color: #28a745; /* Green color for edit button */
+            background-color: #28a745;
         }
 
         button:hover {
-            background-color: #c82333; /* Darker red color on hover */
+            background-color: #c82333;
         }
 
         button.edit:hover {
-            background-color: #218838; /* Darker green color on hover */
+            background-color: #218838;
         }
 
         .timestamp {
             font-size: 12px;
-            color: #666;
+            color: #6f6e6e;
         }
         .logout-btn {
             position: absolute;
@@ -90,8 +90,8 @@
 <div th:each="message : ${messages}">
     <p th:text="${message.content}"></p>
     <p th:text="'Created by: ' + ${message.userEntity.userName}" class="timestamp"></p>
-    <p th:text="'Created: ' + ${#dates.format(message.createdDate, 'yyyy-MM-dd HH:mm')}" class="timestamp"></p>
-    <p th:if="${message.lastModifiedDate != null}" th:text="'Last edited: ' + ${#dates.format(message.lastModifiedDate, 'yyyy-MM-dd HH:mm')}" class="timestamp"></p>
+    <p th:text="'Created: ' + ${#dates.format(message.createdDate, 'yyyy-MM-dd HH:mm:ss')}" class="timestamp"></p>
+    <p th:if="${message.lastModifiedDate != null}" th:text="'Last edited: ' + ${#dates.format(message.lastModifiedDate, 'yyyy-MM-dd HH:mm:ss')}" class="timestamp"></p>
     <form th:action="@{/web/edit/{id}(id=${message.id})}" method="get"><button class="edit" type="submit">Edit</button> </form>
     <form th:action="@{/web/messages/{id}/delete(id=${message.id})}" method="post">
         <button type="submit">Delete</button>

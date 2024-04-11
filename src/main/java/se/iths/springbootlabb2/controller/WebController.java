@@ -91,23 +91,12 @@ public class WebController {
     @PostMapping("messages/{id}/delete")
     public String deleteMessage(@PathVariable Long id) {
         try {
-            // Retrieve the message by ID
             Optional<MessageEntity> optionalMessage = messageService.getMessageById(id);
-
-            // Check if the message exists
-            if (optionalMessage.isPresent()) {
-                // Delete the message
-                messageService.deleteMessageById(id);
-            } else {
-                // If the message doesn't exist, handle the error accordingly
-                throw new EntityNotFoundException("Message not found with ID: " + id);
-            }
+            if (optionalMessage.isPresent()) messageService.deleteMessageById(id);
+            else throw new EntityNotFoundException("Message not found with ID: " + id);
         } catch (EntityNotFoundException e) {
-            // Handle the exception, for example, by logging the error or displaying a message to the user
-            e.printStackTrace(); // Log the error
+            e.printStackTrace();
         }
-
-        // Redirect back to the messages page
         return "redirect:/web/messages";
     }
 
@@ -140,12 +129,8 @@ public class WebController {
     }
     @GetMapping("/logout")
     public String logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
-        // Invalidate session
-        if (authentication != null) {
-            new SecurityContextLogoutHandler().logout(request, response, authentication);
-        }
-        // Redirect user to logout page or home page
-        return "redirect:/login?logout"; // Redirect to the login page with a logout parameter
+        if (authentication != null) new SecurityContextLogoutHandler().logout(request, response, authentication);
+        return "redirect:/login?logout";
     }
 
 }
