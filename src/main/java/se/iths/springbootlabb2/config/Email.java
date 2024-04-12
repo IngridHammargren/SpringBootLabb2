@@ -2,7 +2,6 @@ package se.iths.springbootlabb2.config;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import java.util.List;
 
 public record Email(String email, boolean primary, boolean verified, String visibility) {

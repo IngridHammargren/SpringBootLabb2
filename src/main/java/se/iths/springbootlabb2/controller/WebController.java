@@ -1,24 +1,22 @@
 package se.iths.springbootlabb2.controller;
 
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.core.OAuth2AccessToken;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import se.iths.springbootlabb2.CreateMessageFormData;
-import se.iths.springbootlabb2.config.GithubOAuth2UserService;
 import se.iths.springbootlabb2.entities.MessageEntity;
 import se.iths.springbootlabb2.entities.UserEntity;
 import se.iths.springbootlabb2.repositories.UserRepository;
 import se.iths.springbootlabb2.services.MessageService;
-import se.iths.springbootlabb2.services.UserService;
-
-import java.time.Instant;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,19 +24,17 @@ import java.util.Optional;
 @RequestMapping("/web")
 public class WebController {
 
-    GithubOAuth2UserService githubOAuth2UserService;
     MessageService messageService;
-    UserService userService;
+    UserRepository userRepository;
 
-    public WebController(GithubOAuth2UserService githubOAuth2UserService, MessageService messageService, UserService userService) {
-        this.githubOAuth2UserService = githubOAuth2UserService;
+    public WebController(MessageService messageService, UserRepository userRepository) {
         this.messageService = messageService;
-        this.userService = userService;
+        this.userRepository = userRepository;
     }
 
     @GetMapping("/")
     public String home(){
-        return "home";
+        return "redirect: /web/messages";
     }
 
     @GetMapping("/secured")
@@ -49,6 +45,7 @@ public class WebController {
     @GetMapping("messages")
     public String getAllMessages(Model model) {
         Iterable<MessageEntity> messages = messageService.getAllMessages();
+        Collections.reverse((List<MessageEntity>) messages);
         model.addAttribute("messages", messages);
         return "messages";
     }
@@ -63,26 +60,43 @@ public class WebController {
                                 BindingResult bindingResult,
                                 Model model) {
 
-        if (bindingResult.hasErrors()) {
-            System.out.println("Has error");
-            return "create";
+        if (bindingResult.hasErrors()) return "create";
+
+        OAuth2User userDetails = (OAuth2User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Optional<UserEntity> existingUser = userRepository.findByUserName(userDetails.getAttributes().get("login").toString());
+        UserEntity user;
+        if (existingUser.isPresent()) {
+            user = existingUser.get();
+        } else {
+            user = new UserEntity();
+            var name = userDetails.getAttributes().get("name").toString().split(" ");
+            user.setGithubId(Long.parseLong(userDetails.getAttributes().get("id").toString()));
+            user.setUserName(userDetails.getAttributes().get("login").toString());
+            user.setFirstName(name[0]);
+            String lastName = (name.length > 1) ? name[1] : "";
+            user.setLastName(lastName);
+            user.setEmail( "max.erkmar@iths.se");
         }
 
-        // Hämta användaruppgifter från autentiseringen
-        OAuth2User userDetails = (OAuth2User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        // Hämta eller skapa en ny UserEntity baserat på GitHub-uppgifterna
-        UserEntity user = githubOAuth2UserService.findOrCreateUserFromGithub(userDetails);
-
-        // Ange användaren för meddelandet
         msg.setUserEntity(user);
 
-        // Spara meddelandet i databasen
         messageService.saveMessage(msg.toEntity());
-
-        // Omdirigera till meddelandelistan
         return "redirect:/web/messages";
     }
+
+
+    @PostMapping("messages/{id}/delete")
+    public String deleteMessage(@PathVariable Long id) {
+        try {
+            Optional<MessageEntity> optionalMessage = messageService.getMessageById(id);
+            if (optionalMessage.isPresent()) messageService.deleteMessageById(id);
+            else throw new EntityNotFoundException("Message not found with ID: " + id);
+        } catch (EntityNotFoundException e) {
+            e.printStackTrace();
+        }
+        return "redirect:/web/messages";
+    }
+
 
 
     @GetMapping("/edit/{id}")
@@ -110,4 +124,10 @@ public class WebController {
         }
         return "redirect:/web/messages";
     }
+    @GetMapping("/logout")
+    public String logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
+        if (authentication != null) new SecurityContextLogoutHandler().logout(request, response, authentication);
+        return "redirect:/login?logout";
+    }
+
 }
