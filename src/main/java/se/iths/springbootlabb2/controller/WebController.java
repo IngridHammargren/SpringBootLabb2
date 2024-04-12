@@ -2,6 +2,7 @@ package se.iths.springbootlabb2.controller;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.stereotype.Controller;
@@ -10,6 +11,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import se.iths.springbootlabb2.CreateMessageFormData;
+import se.iths.springbootlabb2.config.GithubOAuth2UserService;
 import se.iths.springbootlabb2.entities.MessageEntity;
 import se.iths.springbootlabb2.entities.UserEntity;
 import se.iths.springbootlabb2.repositories.UserRepository;
@@ -24,12 +26,14 @@ import java.util.Optional;
 @RequestMapping("/web")
 public class WebController {
 
+    GithubOAuth2UserService githubOAuth2UserService;
     MessageService messageService;
-    UserRepository userRepository;
+    UserService userService;
 
-    public WebController(MessageService messageService, UserRepository userRepository) {
+    public WebController(GithubOAuth2UserService githubOAuth2UserService, MessageService messageService, UserService userService) {
+        this.githubOAuth2UserService = githubOAuth2UserService;
         this.messageService = messageService;
-        this.userRepository = userRepository;
+        this.userService = userService;
     }
 
     @GetMapping("/")
@@ -64,29 +68,22 @@ public class WebController {
             return "create";
         }
 
-
-
+        // Hämta användaruppgifter från autentiseringen
         OAuth2User userDetails = (OAuth2User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Optional<UserEntity> existingUser = userRepository.findByUserName(userDetails.getAttributes().get("login").toString());
-        UserEntity user;
-        if (existingUser.isPresent()) {
-            user = existingUser.get();
-        } else {
-            user = new UserEntity();
-            user.setGithubId(Long.parseLong(userDetails.getAttributes().get("id").toString()));
-            user.setUserName(userDetails.getAttributes().get("login").toString());
-            user.setFirstName(userDetails.getAttributes().get("name").toString());
-            user.setLastName(userDetails.getAttributes().get("family_name").toString());
-            user.setEmail(userDetails.getAttributes().get("email") != null ? userDetails.getAttributes().get("email").toString() : "max.erkmar@iths.se");
-        }
 
+        // Hämta eller skapa en ny UserEntity baserat på GitHub-uppgifterna
+        UserEntity user = githubOAuth2UserService.findOrCreateUserFromGithub(userDetails);
 
-
+        // Ange användaren för meddelandet
         msg.setUserEntity(user);
 
+        // Spara meddelandet i databasen
         messageService.saveMessage(msg.toEntity());
+
+        // Omdirigera till meddelandelistan
         return "redirect:/web/messages";
     }
+
 
     @GetMapping("/edit/{id}")
     public String showEditForm(@PathVariable("id") Long id, Model model) {
