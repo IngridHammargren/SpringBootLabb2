@@ -78,7 +78,7 @@ public class WebController {
             user.setFirstName(name[0]);
             String lastName = (name.length > 1) ? name[1] : "";
             user.setLastName(lastName);
-            user.setEmail(userDetails.getAttributes().get("email") != null ? userDetails.getAttributes().get("email").toString() : "max.erkmar@iths.se");
+            user.setEmail( "max.erkmar@iths.se");
         }
 
         msg.setUserEntity(user);
