@@ -3,6 +3,7 @@ package se.iths.springbootlabb2.controller;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
@@ -16,6 +17,8 @@ import se.iths.springbootlabb2.entities.MessageEntity;
 import se.iths.springbootlabb2.entities.UserEntity;
 import se.iths.springbootlabb2.repositories.UserRepository;
 import se.iths.springbootlabb2.services.MessageService;
+
+import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
