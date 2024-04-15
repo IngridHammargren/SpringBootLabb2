@@ -20,9 +20,9 @@
 <h1 th:text="#{users}"></h1>
 <p th:each="userEntity : ${userNames}" th:text="${userEntity}">No name</p>
 <div th:if="${userNames.isEmpty()}">
-    <p>We have no users</p>
+    <p th:text="#{no.users}">We have no users</p>
 </div>
-<a href="/web/create" th:text="#{moreusers}"></a>
+<a href="/web/create" th:text="#{more.users}"></a>
 
 <!-- Add the logout form -->
 <form id="logoutForm" action="/logout" method="post">

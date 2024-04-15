@@ -60,10 +60,10 @@
     </style>
 </head>
 <body>
-<h1>Edit Message</h1>
+<h1 th:text="#{edit.title}">Edit Message</h1>
 <form action="#" th:action="@{/web/edit/{id}(id=${messageId})}" th:object="${editedMessage}" method="post">
     <textarea id="content" name="content" th:field="*{content}" required></textarea><br>
-    <input type="submit" value="Update">
+    <p><input type="submit" th:value="#{update.button.text}"/></p>
 </form>
 </body>
 </html>
