@@ -72,10 +72,23 @@
             font-size: 12px;
             color: #6f6e6e;
         }
+
+
         .logout-btn {
             position: absolute;
             top: 20px;
             right: 10px;
+        }
+        .language-btn_sv {
+            position: absolute;
+            top: 20px;
+            right: 150px;
+        }
+
+        .language-btn_en {
+            position: absolute;
+            top: 20px;
+            right: 280px;
         }
         .new-message-btn {
             position: absolute;
@@ -85,21 +98,25 @@
     </style>
 </head>
 <body>
-<h1>Messages</h1>
+<h1 th:text="#{messages.header}">Messages</h1>
 
 <div th:each="message : ${messages}">
     <p th:text="${message.content}"></p>
     <p th:text="'Created by: ' + ${message.userEntity.userName}" class="timestamp"></p>
     <p th:text="'Created: ' + ${#dates.format(message.createdDate, 'yyyy-MM-dd HH:mm:ss')}" class="timestamp"></p>
     <p th:if="${message.lastModifiedDate != null}" th:text="'Last edited: ' + ${#dates.format(message.lastModifiedDate, 'yyyy-MM-dd HH:mm:ss')}" class="timestamp"></p>
-    <form th:action="@{/web/edit/{id}(id=${message.id})}" method="get"><button class="edit" type="submit">Edit</button> </form>
+    <form th:action="@{/web/edit/{id}(id=${message.id})}" method="get"><button class="edit" type="submit" th:text="#{button.edit}">Edit</button> </form>
     <form th:action="@{/web/messages/{id}/delete(id=${message.id})}" method="post">
-        <button type="submit">Delete</button>
+        <button type="submit" th:text="#{button.delete}">Delete</button>
     </form>
 </div>
+<div>
+    <a th:href="@{${httpServletRequest.requestURI} + '?lang=en'}" class="language-btn_en">English</a>
+    <a th:href="@{${httpServletRequest.requestURI} + '?lang=sv'}" class="language-btn_sv">Svenska</a>
+</div>
 <form action="/web/logout" method="get" class="logout-btn">
-    <button type="submit">Logout</button>
+    <button type="submit" th:text="#{button.logout}">Logout</button>
 </form>
-    <a href="/web/create" class="new-message-btn">New message</a>
+<a href="/web/create" class="new-message-btn" th:text="#{new.message}">New message</a>
 </body>
 </html>

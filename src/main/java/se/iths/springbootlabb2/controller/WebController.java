@@ -12,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import se.iths.springbootlabb2.CreateMessageFormData;
 import se.iths.springbootlabb2.entities.MessageEntity;
 import se.iths.springbootlabb2.entities.UserEntity;
@@ -36,22 +37,24 @@ public class WebController {
     }
 
     @GetMapping("/")
-    public String home(){
+    public String home() {
         return "redirect: /web/messages";
     }
 
     @GetMapping("/secured")
-    public String secured(){
+    public String secured() {
         return "secured";
     }
 
     @GetMapping("messages")
-    public String getAllMessages(Model model) {
+    public String getAllMessages(Model model, HttpServletRequest httpServletRequest) {
         Iterable<MessageEntity> messages = messageService.getAllMessages();
         Collections.reverse((List<MessageEntity>) messages);
         model.addAttribute("messages", messages);
+        model.addAttribute("httpServletRequest", httpServletRequest);
         return "messages";
     }
+
     @GetMapping("create")
     public String showCreateForm(Model model) {
         model.addAttribute("messageContent", new CreateMessageFormData());
@@ -78,7 +81,7 @@ public class WebController {
             user.setFirstName(name[0]);
             String lastName = (name.length > 1) ? name[1] : "";
             user.setLastName(lastName);
-            user.setEmail( "max.erkmar@iths.se");
+            user.setEmail("max.erkmar@iths.se");
         }
 
         msg.setUserEntity(user);
@@ -101,7 +104,6 @@ public class WebController {
     }
 
 
-
     @GetMapping("/edit/{id}")
     public String showEditForm(@PathVariable("id") Long id, Model model) {
         Optional<MessageEntity> messageOptional = messageService.getMessageById(id);
@@ -116,9 +118,12 @@ public class WebController {
             return "redirect:/web/messages";
         }
     }
+
     @PostMapping("/edit/{id}")
     public String editMessage(@PathVariable("id") Long id, @ModelAttribute("editedMessage") CreateMessageFormData editedMessage, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {return "edit";}
+        if (bindingResult.hasErrors()) {
+            return "edit";
+        }
         Optional<MessageEntity> messageOptional = messageService.getMessageById(id);
         if (messageOptional.isPresent()) {
             MessageEntity message = messageOptional.get();
@@ -127,6 +132,7 @@ public class WebController {
         }
         return "redirect:/web/messages";
     }
+
     @GetMapping("/logout")
     public String logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
         if (authentication != null) new SecurityContextLogoutHandler().logout(request, response, authentication);
@@ -134,3 +140,6 @@ public class WebController {
     }
 
 }
+
+
+
