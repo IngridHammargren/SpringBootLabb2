@@ -1,7 +1,5 @@
 package se.iths.springbootlabb2.config;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
@@ -16,10 +14,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @Service
-public class GithubOAuth2UserService
-        extends DefaultOAuth2UserService {
-
-    Logger logger = LoggerFactory.getLogger(GithubOAuth2UserService.class);
+public class GithubOAuth2UserService extends DefaultOAuth2UserService {
 
     GithubService githubService;
     UserRepository userRepository;
