@@ -3,22 +3,16 @@ package se.iths.springbootlabb2.controller;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.Valid;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import se.iths.springbootlabb2.CreateMessageFormData;
 import se.iths.springbootlabb2.entities.MessageEntity;
-import se.iths.springbootlabb2.entities.UserEntity;
 import se.iths.springbootlabb2.repositories.UserRepository;
 import se.iths.springbootlabb2.services.MessageService;
-
-import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -57,7 +51,7 @@ public class WebController {
         model.addAttribute("messageContent", new CreateMessageFormData());
         return "create";
     }
-
+/*
     @PostMapping("create")
     public String createMessage(@ModelAttribute("messageContent") CreateMessageFormData msg,
                                 BindingResult bindingResult,
@@ -87,6 +81,8 @@ public class WebController {
         return "redirect:/web/messages";
     }
 
+
+ */
 
     @PostMapping("messages/{id}/delete")
     public String deleteMessage(@PathVariable Long id) {

@@ -13,6 +13,7 @@ import se.iths.springbootlabb2.entities.UserEntity;
 import se.iths.springbootlabb2.repositories.UserRepository;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class GithubOAuth2UserService
@@ -31,45 +32,54 @@ public class GithubOAuth2UserService
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
-        OAuth2User oidcUser = super.loadUser(userRequest);
-        Map<String, Object> attributes = oidcUser.getAttributes();
+        OAuth2User  oauth2User = super.loadUser(userRequest);
+        Map<String, Object> attributes =  oauth2User.getAttributes();
 
-        OAuth2AccessToken accessToken = userRequest.getAccessToken();
+        Integer githubId = (Integer) attributes.get("id");
+        Optional<UserEntity> authenticatedUser = Optional.ofNullable(userRepository.findByGithubId(Long.valueOf(githubId)));
 
-        List<Email> result = githubService.getEmails(accessToken);
-
-        GithubUser githubUser = new GithubUser();
-        githubUser.setUserId(((Integer) attributes.get("id")).longValue());
-        githubUser.setName((String) attributes.get("name"));
-        githubUser.setUrl((String) attributes.get("html_url"));
-        githubUser.setAvatarUrl((String) attributes.get("avatar_url"));
-        githubUser.setLogin((String) attributes.get("login"));
-        githubUser.setEmail(result.getFirst().email());
-        updateUser(githubUser);
-
-        return oidcUser;
+        if (authenticatedUser.isEmpty()) {
+            UserEntity userEntity = createGitUser(attributes, userRequest);
+            userRepository.save(userEntity);
+        }
+        return oauth2User;
     }
 
-    private void updateUser(GithubUser gitUser) {
-        logger.info("User detected, {}, {}", gitUser.getLogin(), gitUser.getName());
-        UserEntity user = userRepository.findByGithubId(gitUser.getUserId());
+    private UserEntity createGitUser(Map<String, Object> attributes, OAuth2UserRequest userRequest) {
+        OAuth2AccessToken accessToken = userRequest.getAccessToken();
+        UserEntity userEntity = new UserEntity();
 
-        if (user == null) {
-            logger.info("New user detected, {}, {}", gitUser.getLogin(), gitUser.getName());
-            user = new UserEntity();
-            user.setGithubId(gitUser.getUserId());
-        }
-        var names = gitUser.getName().split(" ");
-        user.setFirstName(names[0]);
-        if (names.length > 1) {
-            user.setLastName(names[1]);
-        } else {
-            user.setLastName("");
-        }
-        user.setUserName(gitUser.getLogin());
-        user.setProfilePicture(gitUser.getAvatarUrl());
+        userEntity.setGithubId( ((Integer) attributes.get("id")).longValue());        userEntity.setUserName((String) attributes.get("login"));
+        userEntity.setProfilePicture((String) attributes.get("avatar_url"));
 
-        userRepository.save(user);
+        String name = (String) attributes.get("name");
+        var names = name.split(" ");
+        if (names.length > 0){
+            userEntity.setFirstName(names[0]);
+            if (names.length > 1){
+                StringBuilder lastNameBuilder = new StringBuilder();
+                for (int i = 1; i < names.length; i++) {
+                    if (i > 1) {
+                        lastNameBuilder.append(" ");
+                    }
+                    lastNameBuilder.append(names[i]);
+                }
+                userEntity.setLastName(lastNameBuilder.toString());
+            } else {
+                userEntity.setLastName("");
+            }
+        }
+
+        userEntity.setEmail((String) attributes.get("email"));
+        List<Email> emails = githubService.getEmails(accessToken);
+        for (Email mail : emails) {
+            if (mail.primary()) {
+                String userEmail = mail.email();
+                userEntity.setEmail(userEmail);
+                break;
+            }
+        }
+        return userEntity;
     }
 }
 
