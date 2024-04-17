@@ -3,7 +3,6 @@ package se.iths.springbootlabb2.services;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import se.iths.springbootlabb2.entities.UserEntity;
 import se.iths.springbootlabb2.repositories.UserRepository;
 
 
@@ -18,13 +17,7 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-
-
-    public void save(UserEntity existingUser) {
-        userRepository.save(existingUser);
-    }
 }
-
 
 
 

@@ -21,7 +21,7 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers( "/login", "/oauth/**", "/logout", "/error**").permitAll()
-                        .requestMatchers("/web/create").permitAll()
+                        .requestMatchers("/web/create").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/web/delete/**").permitAll()
                         .anyRequest().authenticated()
                 )

@@ -44,7 +44,8 @@ public class GithubOAuth2UserService extends DefaultOAuth2UserService {
         OAuth2AccessToken accessToken = userRequest.getAccessToken();
         UserEntity userEntity = new UserEntity();
 
-        userEntity.setGithubId( ((Integer) attributes.get("id")).longValue());        userEntity.setUserName((String) attributes.get("login"));
+        userEntity.setGithubId( ((Integer) attributes.get("id")).longValue());
+        userEntity.setUserName((String) attributes.get("login"));
         userEntity.setProfilePicture((String) attributes.get("avatar_url"));
 
         String name = (String) attributes.get("name");
