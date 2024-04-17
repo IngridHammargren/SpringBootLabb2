@@ -8,13 +8,6 @@ import java.util.List;
 
 public interface MessageRepository extends ListCrudRepository<MessageEntity, Long> {
 
-/*
-    @Query ("SELECT m FROM MessageEntity m WHERE m.userEntity.id = :userId")
-    List<MessageEntity> findByUserId(Long userId);
-
-    @Query("SELECT m FROM MessageEntity m WHERE m.userEntity.id = :userId AND m.isPublic = true")
-    List<MessageEntity> findPublicMessagesByUserId(Long userId);
-*/
     @Query("SELECT m FROM MessageEntity m WHERE m.isPublic = true ORDER BY m.createdDate DESC")
     List<MessageEntity> findLatestMessagesPublic(java.awt.print.Pageable pageable);
 

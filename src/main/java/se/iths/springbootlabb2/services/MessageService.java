@@ -1,12 +1,9 @@
 package se.iths.springbootlabb2.services;
 
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import se.iths.springbootlabb2.entities.MessageEntity;
 import se.iths.springbootlabb2.repositories.MessageRepository;
-
-import java.util.List;
 import java.util.Optional;
 
 @Service

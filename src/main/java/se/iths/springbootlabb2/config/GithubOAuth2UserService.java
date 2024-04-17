@@ -1,58 +1,81 @@
 package se.iths.springbootlabb2.config;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
+import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
-
+import se.iths.springbootlabb2.entities.UserEntity;
+import se.iths.springbootlabb2.repositories.UserRepository;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class GithubOAuth2UserService extends DefaultOAuth2UserService {
 
-    Logger logger = LoggerFactory.getLogger(GithubOAuth2UserService.class);
+    GithubService githubService;
+    UserRepository userRepository;
 
-    GithubService gitHubService;
-
-    public GithubOAuth2UserService(GithubService gitHubService) {
-        this.gitHubService = gitHubService;
+    @Autowired
+    public GithubOAuth2UserService(GithubService githubService, UserRepository userRepository) {
+        this.githubService = githubService;
+        this.userRepository = userRepository;
     }
 
-    //https://dev.to/relive27/spring-security-oauth2-login-51lj
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
-        OAuth2User oidcUser = super.loadUser(userRequest);
-        Map<String, Object> attributes = oidcUser.getAttributes();
+        OAuth2User  oauth2User = super.loadUser(userRequest);
+        Map<String, Object> attributes =  oauth2User.getAttributes();
 
-        GithubUser gitHubUser = new GithubUser();
-        gitHubUser.setUserId(String.valueOf(attributes.get("id")));
-        gitHubUser.setName((String) attributes.get("name"));
-        gitHubUser.setUrl((String) attributes.get("html_url"));
-        gitHubUser.setAvatarUrl((String) attributes.get("avatar_url"));
-        gitHubUser.setLogin((String) attributes.get("login"));
-        updateUser(gitHubUser);
+        Integer githubId = (Integer) attributes.get("id");
+        Optional<UserEntity> authenticatedUser = Optional.ofNullable(userRepository.findByGithubId(Long.valueOf(githubId)));
 
-        return oidcUser;
+        if (authenticatedUser.isEmpty()) {
+            UserEntity userEntity = createGitUser(attributes, userRequest);
+            userRepository.save(userEntity);
+        }
+        return oauth2User;
     }
 
-    private void updateUser(GithubUser gitUser) {
-        logger.info("User detected, {}, {}", gitUser.getLogin(), gitUser.getName());
-//        var user = userInfoRepository.findByUserId(gitUser.getUserId());
-//        if (user == null) {
-//            logger.info("New user detected, {}, {}", gitUser.getLogin(), gitUser.getName());
-//            user = new UserInfo();
-//        }
-//
-//        user.setUserId(gitUser.getUserId());
-//        user.setName(gitUser.getName());
-//        user.setUrl(gitUser.getUrl());
-//        user.setLogin(gitUser.getLogin());
-//        user.setAvatarUrl(gitUser.getAvatarUrl());
-//
-//        userInfoRepository.save(user);
+    private UserEntity createGitUser(Map<String, Object> attributes, OAuth2UserRequest userRequest) {
+        OAuth2AccessToken accessToken = userRequest.getAccessToken();
+        UserEntity userEntity = new UserEntity();
+
+        userEntity.setGithubId( ((Integer) attributes.get("id")).longValue());
+        userEntity.setUserName((String) attributes.get("login"));
+        userEntity.setProfilePicture((String) attributes.get("avatar_url"));
+
+        String name = (String) attributes.get("name");
+        var names = name.split(" ");
+        if (names.length > 0){
+            userEntity.setFirstName(names[0]);
+            if (names.length > 1){
+                StringBuilder lastNameBuilder = new StringBuilder();
+                for (int i = 1; i < names.length; i++) {
+                    if (i > 1) {
+                        lastNameBuilder.append(" ");
+                    }
+                    lastNameBuilder.append(names[i]);
+                }
+                userEntity.setLastName(lastNameBuilder.toString());
+            } else {
+                userEntity.setLastName("");
+            }
+        }
+
+        userEntity.setEmail((String) attributes.get("email"));
+        List<Email> emails = githubService.getEmails(accessToken);
+        for (Email mail : emails) {
+            if (mail.primary()) {
+                String userEmail = mail.email();
+                userEntity.setEmail(userEmail);
+                break;
+            }
+        }
+        return userEntity;
     }
 }
 
