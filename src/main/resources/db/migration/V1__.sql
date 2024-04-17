@@ -28,3 +28,4 @@ ALTER TABLE user_entity
 
 ALTER TABLE message_entity
     ADD CONSTRAINT FK_MESSAGEENTITY_ON_USER FOREIGN KEY (user_id) REFERENCES user_entity (id);
+
