@@ -18,6 +18,7 @@ import se.iths.springbootlabb2.entities.MessageEntity;
 import se.iths.springbootlabb2.entities.UserEntity;
 import se.iths.springbootlabb2.repositories.UserRepository;
 import se.iths.springbootlabb2.services.MessageService;
+import se.iths.springbootlabb2.services.TranslateService;
 
 import java.time.Instant;
 import java.util.Collections;
@@ -30,10 +31,12 @@ public class WebController {
 
     MessageService messageService;
     UserRepository userRepository;
+    TranslateService translateService;
 
-    public WebController(MessageService messageService, UserRepository userRepository) {
+    public WebController(MessageService messageService, UserRepository userRepository, TranslateService translateService) {
         this.messageService = messageService;
         this.userRepository = userRepository;
+        this.translateService= translateService;
     }
 
     @GetMapping("/")
@@ -88,6 +91,26 @@ public class WebController {
 
         messageService.saveMessage(msg.toEntity());
         return "redirect:/web/messages";
+    }
+
+    @PostMapping("/translate/{id}")
+    public String translateMessage(@PathVariable Long id, Model model, HttpServletRequest httpServletRequest) {
+        Optional<MessageEntity> optionalMessage = messageService.getMessageById(id);
+
+        if (optionalMessage.isPresent()) {
+            MessageEntity message = optionalMessage.get();
+            String translatedMessage = translateService.translateMessage(message.getContent());
+            message.setContent(translatedMessage);
+            messageService.saveMessage(message);
+        } else {
+
+        }
+
+        Iterable<MessageEntity> messages = messageService.getAllMessages();
+        Collections.reverse((List<MessageEntity>) messages);
+        model.addAttribute("messages", messages);
+        model.addAttribute("httpServletRequest", httpServletRequest);
+        return "messages";
     }
 
 
