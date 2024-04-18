@@ -95,6 +95,11 @@
             top: 1px;
             left: 20px;
         }
+        .swagger-btn {
+            position: absolute;
+            top: 1px;
+            left: 170px;
+        }
     </style>
 </head>
 <body>
@@ -119,5 +124,6 @@
     <button type="submit" th:text="#{button.logout}">Logout</button>
 </form>
 <a href="/web/create" class="new-message-btn" th:text="#{new.message}">New message</a>
+<a href="/swagger-ui/index.html" class="swagger-btn" target="_blank">Documentation</a>
 </body>
 </html>
