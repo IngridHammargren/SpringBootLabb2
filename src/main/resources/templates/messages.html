@@ -98,7 +98,7 @@
         .swagger-btn {
             position: absolute;
             top: 1px;
-            left: 170px;
+            left: 200px;
         }
     </style>
 </head>
@@ -110,13 +110,11 @@
     <p th:text="#{created.by} + ${message.userEntity.userName}" class="timestamp"></p>
     <p th:text="#{created} + ${#dates.format(message.createdDate, 'yyyy-MM-dd HH:mm:ss')}" class="timestamp"></p>
     <p th:if="${message.lastModifiedDate != null}" th:text="#{last.edited} + ${#dates.format(message.lastModifiedDate, 'yyyy-MM-dd HH:mm:ss')}" class="timestamp"></p>
+    <p th:if="${message.lastModifiedDate != null}" th:text="#{last.edited.by} + ${message.userEntity.userName}" class="timestamp"></p>
     <form th:action="@{/web/translate/{id}(id=${message.id})}" method="post">
         <input type="hidden" name="message" th:value="${message.content}">
         <button type="submit" th:text="#{button.translate}">Translate</button>
     </form>
-
-    <p th:if="${message.lastModifiedDate != null}" th:text="#{last.edited.by} + ${message.userEntity.userName}" class="timestamp"></p>
-    <p th:if="${message.lastModifiedDate != null}" th:text="#{last.edited} + ${#dates.format(message.lastModifiedDate, 'yyyy-MM-dd HH:mm:ss')}" class="timestamp"></p>
     <form th:action="@{/web/edit/{id}(id=${message.id})}" method="get"><button class="edit" type="submit" th:text="#{button.edit}">Edit</button> </form>
     <form th:action="@{/web/messages/{id}/delete(id=${message.id})}" method="post">
         <button type="submit" th:text="#{button.delete}">Delete</button>
