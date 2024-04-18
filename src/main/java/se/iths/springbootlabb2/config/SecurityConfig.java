@@ -11,8 +11,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.client.RestClient;
 
-import static org.springframework.security.config.Customizer.withDefaults;
-
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -23,7 +21,7 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers( "/login", "/oauth/**", "/logout", "/error**").permitAll()
-                        .requestMatchers("/web/create").permitAll()
+                        .requestMatchers("/web/create").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/web/delete/**").permitAll()
                         .anyRequest().authenticated()
                 )

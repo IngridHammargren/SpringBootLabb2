@@ -1,9 +1,9 @@
 package se.iths.springbootlabb2.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.Valid;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
@@ -11,16 +11,16 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.security.oauth2.core.user.OAuth2User;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import se.iths.springbootlabb2.CreateMessageFormData;
 import se.iths.springbootlabb2.entities.MessageEntity;
 import se.iths.springbootlabb2.entities.UserEntity;
 import se.iths.springbootlabb2.repositories.UserRepository;
 import se.iths.springbootlabb2.services.MessageService;
+
 import se.iths.springbootlabb2.services.TranslateService;
 
 import java.time.Instant;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -48,7 +48,7 @@ public class WebController {
     public String secured() {
         return "secured";
     }
-
+    @Operation(summary = "Get all messages")
     @GetMapping("messages")
     public String getAllMessages(Model model, HttpServletRequest httpServletRequest) {
         Iterable<MessageEntity> messages = messageService.getAllMessages();
@@ -58,34 +58,22 @@ public class WebController {
         return "messages";
     }
 
+    @Operation(summary = "Show create message form")
     @GetMapping("create")
     public String showCreateForm(Model model) {
         model.addAttribute("messageContent", new CreateMessageFormData());
         return "create";
     }
 
+    @Operation(summary = "Create a message")
     @PostMapping("create")
     public String createMessage(@ModelAttribute("messageContent") CreateMessageFormData msg,
-                                BindingResult bindingResult,
-                                Model model) {
+                                BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) return "create";
 
-        OAuth2User userDetails = (OAuth2User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Optional<UserEntity> existingUser = userRepository.findByUserName(userDetails.getAttributes().get("login").toString());
-        UserEntity user;
-        if (existingUser.isPresent()) {
-            user = existingUser.get();
-        } else {
-            user = new UserEntity();
-            var name = userDetails.getAttributes().get("name").toString().split(" ");
-            user.setGithubId(Long.parseLong(userDetails.getAttributes().get("id").toString()));
-            user.setUserName(userDetails.getAttributes().get("login").toString());
-            user.setFirstName(name[0]);
-            String lastName = (name.length > 1) ? name[1] : "";
-            user.setLastName(lastName);
-            user.setEmail("max.erkmar@iths.se");
-        }
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        UserEntity user = userRepository.findByGithubId(Long.valueOf(username));
 
         msg.setUserEntity(user);
 
@@ -114,6 +102,9 @@ public class WebController {
     }
 
 
+
+    @Operation(summary = "Delete a message")
+
     @PostMapping("messages/{id}/delete")
     public String deleteMessage(@PathVariable Long id) {
         try {
@@ -126,7 +117,7 @@ public class WebController {
         return "redirect:/web/messages";
     }
 
-
+    @Operation(summary = "Show edit message form")
     @GetMapping("/edit/{id}")
     public String showEditForm(@PathVariable("id") Long id, Model model) {
         Optional<MessageEntity> messageOptional = messageService.getMessageById(id);
@@ -141,7 +132,7 @@ public class WebController {
             return "redirect:/web/messages";
         }
     }
-
+    @Operation(summary = "Edit a message")
     @PostMapping("/edit/{id}")
     public String editMessage(@PathVariable("id") Long id, @ModelAttribute("editedMessage") CreateMessageFormData editedMessage, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
@@ -155,7 +146,7 @@ public class WebController {
         }
         return "redirect:/web/messages";
     }
-
+    @Operation(summary = "Logout")
     @GetMapping("/logout")
     public String logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
         if (authentication != null) new SecurityContextLogoutHandler().logout(request, response, authentication);
