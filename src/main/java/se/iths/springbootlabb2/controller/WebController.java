@@ -1,5 +1,6 @@
 package se.iths.springbootlabb2.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -40,7 +41,7 @@ public class WebController {
     public String secured() {
         return "secured";
     }
-
+    @Operation(summary = "Get all messages")
     @GetMapping("messages")
     public String getAllMessages(Model model, HttpServletRequest httpServletRequest) {
         Iterable<MessageEntity> messages = messageService.getAllMessages();
@@ -50,12 +51,14 @@ public class WebController {
         return "messages";
     }
 
+    @Operation(summary = "Show create message form")
     @GetMapping("create")
     public String showCreateForm(Model model) {
         model.addAttribute("messageContent", new CreateMessageFormData());
         return "create";
     }
 
+    @Operation(summary = "Create a message")
     @PostMapping("create")
     public String createMessage(@ModelAttribute("messageContent") CreateMessageFormData msg,
                                 BindingResult bindingResult) {
@@ -71,7 +74,7 @@ public class WebController {
         return "redirect:/web/messages";
     }
 
-
+    @Operation(summary = "Delete a message")
     @PostMapping("messages/{id}/delete")
     public String deleteMessage(@PathVariable Long id) {
         try {
@@ -84,7 +87,7 @@ public class WebController {
         return "redirect:/web/messages";
     }
 
-
+    @Operation(summary = "Show edit message form")
     @GetMapping("/edit/{id}")
     public String showEditForm(@PathVariable("id") Long id, Model model) {
         Optional<MessageEntity> messageOptional = messageService.getMessageById(id);
@@ -99,7 +102,7 @@ public class WebController {
             return "redirect:/web/messages";
         }
     }
-
+    @Operation(summary = "Edit a message")
     @PostMapping("/edit/{id}")
     public String editMessage(@PathVariable("id") Long id, @ModelAttribute("editedMessage") CreateMessageFormData editedMessage, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
@@ -113,7 +116,7 @@ public class WebController {
         }
         return "redirect:/web/messages";
     }
-
+    @Operation(summary = "Logout")
     @GetMapping("/logout")
     public String logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
         if (authentication != null) new SecurityContextLogoutHandler().logout(request, response, authentication);
