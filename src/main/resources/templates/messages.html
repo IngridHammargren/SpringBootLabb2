@@ -109,6 +109,12 @@
     <p th:text="${message.content}"></p>
     <p th:text="#{created.by} + ${message.userEntity.userName}" class="timestamp"></p>
     <p th:text="#{created} + ${#dates.format(message.createdDate, 'yyyy-MM-dd HH:mm:ss')}" class="timestamp"></p>
+    <p th:if="${message.lastModifiedDate != null}" th:text="#{last.edited} + ${#dates.format(message.lastModifiedDate, 'yyyy-MM-dd HH:mm:ss')}" class="timestamp"></p>
+    <form th:action="@{/web/translate/{id}(id=${message.id})}" method="post">
+        <input type="hidden" name="message" th:value="${message.content}">
+        <button type="submit" th:text="#{button.translate}">Translate</button>
+    </form>
+
     <p th:if="${message.lastModifiedDate != null}" th:text="#{last.edited.by} + ${message.userEntity.userName}" class="timestamp"></p>
     <p th:if="${message.lastModifiedDate != null}" th:text="#{last.edited} + ${#dates.format(message.lastModifiedDate, 'yyyy-MM-dd HH:mm:ss')}" class="timestamp"></p>
     <form th:action="@{/web/edit/{id}(id=${message.id})}" method="get"><button class="edit" type="submit" th:text="#{button.edit}">Edit</button> </form>
@@ -116,14 +122,13 @@
         <button type="submit" th:text="#{button.delete}">Delete</button>
     </form>
 </div>
-<div>
     <a th:href="@{${httpServletRequest.requestURI} + '?lang=en'}" class="language-btn_en">English</a>
     <a th:href="@{${httpServletRequest.requestURI} + '?lang=sv'}" class="language-btn_sv">Svenska</a>
-</div>
 <form action="/web/logout" method="get" class="logout-btn">
     <button type="submit" th:text="#{button.logout}">Logout</button>
 </form>
 <a href="/web/create" class="new-message-btn" th:text="#{new.message}">New message</a>
 <a href="/swagger-ui/index.html" class="swagger-btn" target="_blank">Documentation</a>
+
 </body>
 </html>
