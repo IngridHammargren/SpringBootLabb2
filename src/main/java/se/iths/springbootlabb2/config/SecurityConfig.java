@@ -20,10 +20,12 @@ public class SecurityConfig {
     SecurityFilterChain web(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers( "/login", "/oauth/**", "/logout", "/error**").permitAll()
+                        .requestMatchers("/").permitAll()
+                        .requestMatchers("/web/messages").permitAll()
+                        .requestMatchers( "/login*", "/oauth/**", "/logout", "/error**").permitAll()
                         .requestMatchers("/web/create").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/web/delete/**").permitAll()
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()
                 )
                 .oauth2Login(Customizer.withDefaults());
         return http.build();
