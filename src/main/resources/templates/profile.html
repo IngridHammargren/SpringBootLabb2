@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>User Profile</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        div {
+            background-color: #fff;
+            padding: 20px;
+            margin: 10px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        a {
+            display: block;
+            text-align: center;
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 4px;
+            text-decoration: none;
+            margin: 20px auto;
+            width: fit-content;
+            transition: background-color 0.3s ease;
+        }
+
+        a:hover {
+            background-color: #0056b3;
+        }
+
+        form {
+            display: inline-block;
+            margin-right: 5px;
+        }
+
+        button {
+            background-color: #dc3545;
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            width: fit-content;
+        }
+
+        img {
+            max-width: 3%;
+            height: auto;
+            position: absolute;
+        }
+
+        button {
+            background-color: #dc3545;
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            width: fit-content;
+        }
+
+        profileEdit-btn {
+            position: absolute;
+            top: 150px;
+            right: 150px;
+        }
+
+    </style>
+        </head>
+<body>
+<h1>User Profile</h1>
+<div>
+    <p>Username: <span th:text="${user.userName}"></span></p>
+    <p>First Name: <span th:text="${user.firstName}"></span></p>
+    <p>Last Name: <span th:text="${user.lastName}"></span></p>
+    <p>Email: <span th:text="${user.email}"></span></p>
+    <p>Profile picture: <img th:src="${user.getProfilePicture()}" /> </p>
+</div>
+<a href="/web/profile/{id}" class="profileEdit-btn" th:text="#{profileEdit-btn}">profileEdit-btn</a>
+</body>
+</html>
