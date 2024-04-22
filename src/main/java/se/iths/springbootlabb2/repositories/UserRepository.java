@@ -11,13 +11,11 @@ import se.iths.springbootlabb2.entities.UserEntity;
 @Repository
 public interface UserRepository  extends ListCrudRepository<UserEntity, Long> {
     UserEntity findByGithubId(Long githubId);
-    
+
     @Modifying
     @Transactional
-    @Query("update UserEntity u set u.firstName = :firstName, u.lastName = :lastName, u.email = :email, u.githubId = :githubId, u.profilePicture = :profilePicture where u.id = :id")
-    void updateUser(@Param("id") Long id, @Param("firstName") String firstName, @Param("lastName") String lastName, @Param("email") String email, @Param("githubId") Long githubId, @Param("profilePicture") String profilePicture);
-
-
+    @Query("update UserEntity u set u.firstName = :firstName, u.lastName = :lastName, u.email = :email, u.profilePicture = :profilePicture where u.id = :id")
+    void updateUser(@Param("firstName") String firstName, @Param("lastName") String lastName, @Param("email") String email, @Param("profilePicture") String profilePicture);
 }
 
 

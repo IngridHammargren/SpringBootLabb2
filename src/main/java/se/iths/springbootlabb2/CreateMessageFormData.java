@@ -7,8 +7,6 @@ import lombok.Setter;
 import se.iths.springbootlabb2.entities.MessageEntity;
 import se.iths.springbootlabb2.entities.UserEntity;
 
-import java.time.Instant;
-
 @Getter
 @Setter
 public class CreateMessageFormData {

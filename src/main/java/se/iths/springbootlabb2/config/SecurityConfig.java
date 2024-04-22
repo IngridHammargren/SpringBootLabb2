@@ -24,6 +24,7 @@ public class SecurityConfig {
                         .requestMatchers("/web/messages").permitAll()
                         .requestMatchers( "/login*", "/oauth/**", "/logout", "/error**").permitAll()
                         .requestMatchers("/web/create").authenticated()
+                        .requestMatchers("/web/profile/**").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/web/delete/**").permitAll()
                         .anyRequest().permitAll()
                 )
